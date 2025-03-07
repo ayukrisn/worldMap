@@ -16,7 +16,7 @@
                         <option value="open_street_map">OpenStreetMap</option>
                         <option value="google_maps">Google Maps</option>
                     </select>
-                    <button class="bg-blue-500 text-white px-4 py-2 rounded" onclick="saveMarker()">Save Marker</button>
+                    <button id="saveMarkerBtn" class="bg-blue-500 text-white px-4 py-2 rounded">Save Marker</button>
                     <div id="map" style="height: 500px;"></div>
                     
                 </div>

@@ -62,6 +62,10 @@ document.getElementById('mapSwitcher').addEventListener('change', function (e) {
     layers[selectedLayer].addTo(map);
 });
 
+/***
+ * MARKERS
+ */
+
 // Fetch and display existing markers
 function loadMarkers() {
     axios.get('/markers').then(response => {
@@ -88,6 +92,10 @@ map.on('click', function (e) {
 });
 
 // Save marker
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("saveMarkerBtn").addEventListener("click", saveMarker);
+});
+
 function saveMarker() {
     if (!selectedMarker) return alert('Click on the map to select a marker position.');
 
