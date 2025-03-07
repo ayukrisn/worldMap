@@ -18,7 +18,10 @@
                     </select>
                     <button id="saveMarkerBtn" class="bg-blue-500 text-white px-4 py-2 rounded">Save Marker</button>
                     <div id="map" style="height: 500px;"></div>
-                    
+                </div>
+                <div>
+                    <h2 class="text-lg text-white font-bold mt-4">Saved Markers</h2>
+                    <ul id="markerList" class="mt-2 p-2 border rounded-md bg-gray-100"></ul>
                 </div>
             </div>
         </div>

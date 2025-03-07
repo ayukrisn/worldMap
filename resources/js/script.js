@@ -69,18 +69,36 @@ document.getElementById('mapSwitcher').addEventListener('change', function (e) {
 // Fetch and display existing markers
 function loadMarkers() {
     axios.get('/markers').then(response => {
+        // get the markerlist html and clear it
+        let markerList = document.getElementById("markerList");
+        markerList.innerHTML = "";
+
         response.data.forEach(markerData => {
+            // save the marker and then show it to the map
             let marker = L.marker([markerData.latitude, markerData.longitude])
                 .addTo(map)
                 .bindPopup(`<b>${markerData.title}</b><br>${markerData.description}
-                            <br><button onclick="editMarker(${markerData.id})">Edit</button>
-                            <button onclick="deleteMarker(${markerData.id})">Delete</button>`);
+                            <br><button class="edit-button" data-id="${markerData.id}">Edit</button>
+                            <button class="delete-button" data-id="${markerData.id}">Delete</button>`);
             markers.push({ id: markerData.id, marker: marker });
-        });
-    });
-}
 
-loadMarkers();
+            // put each marker into the list
+            let listItem = document.createElement("li");
+            listItem.className = "p-2 border-b";
+
+            listItem.innerHTML = `<strong>${markerData.title}</strong>: ${markerData.description}`;
+            markerList.appendChild(listItem);
+        });
+    })
+    .catch(error => {
+        console.error("Error fetching markers:", error);
+    });
+};
+
+// Load markers when the page loads
+document.addEventListener("DOMContentLoaded", function () {
+    loadMarkers();
+});
 
 // Add marker on click
 map.on('click', function (e) {
@@ -91,7 +109,7 @@ map.on('click', function (e) {
     selectedMarker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(map);
 });
 
-// Save marker
+// Save marker when the page loads
 document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("saveMarkerBtn").addEventListener("click", saveMarker);
 });
@@ -109,12 +127,34 @@ function saveMarker() {
         description: description
     }).then(response => {
         alert('Marker saved!');
-        location.reload();
+        loadMarkers();
     }).catch(error => {
         alert('Error saving marker.');
         console.log(error);
     });
 }
+
+// Listen to the pop up opening event from marker
+map.on("popupopen", function (event) {
+    let popup = event.popup; // Get the popup instance
+
+    let editButton = popup._contentNode.querySelector(".edit-button");
+    let deleteButton = popup._contentNode.querySelector(".delete-button");
+
+    if (editButton) {
+        editButton.addEventListener("click", function () {
+            let id = this.dataset.id;
+            editMarker(id);
+        });
+    }
+
+    if (deleteButton) {
+        deleteButton.addEventListener("click", function () {
+            let id = this.dataset.id;
+            deleteMarker(id);
+        });
+    }
+});
 
 // Edit marker
 function editMarker(id) {
@@ -123,7 +163,7 @@ function editMarker(id) {
 
     axios.put(`/markers/${id}`, {
         title: newTitle,
-        description: newDescription
+        description: newDescription,        
     }).then(response => {
         alert('Marker updated!');
         location.reload();

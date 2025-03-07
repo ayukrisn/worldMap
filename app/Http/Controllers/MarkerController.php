@@ -76,13 +76,13 @@ class MarkerController extends Controller
         }
 
         $request->validate([
-            'latitude' => 'required|numeric',
-            'longitude' => 'required|numeric',
+            // 'latitude' => 'required|numeric',
+            // 'longitude' => 'required|numeric',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
         ]);
 
-        $marker->update($request->all());
+        $marker->update($request->only(['title', 'description']));
 
         return response()->json($marker);
     }
