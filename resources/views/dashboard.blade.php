@@ -17,6 +17,13 @@
                         <option value="google_maps">Google Maps</option>
                     </select>
                     <button id="saveMarkerBtn" class="bg-blue-500 text-white px-4 py-2 rounded">Save Marker</button>
+                    <div class="mb-4">
+                        <input type="text" id="searchBox" placeholder="Search for a location..."
+                            class="p-2 border rounded-md w-full">
+                        <button id="searchLocationBtn"
+                            class="bg-blue-500 text-white px-4 py-2 rounded mt-2">Search</button>
+                    </div>
+
                     <div id="map" style="height: 500px;"></div>
                 </div>
                 <div>

@@ -84,10 +84,18 @@ function loadMarkers() {
 
             // put each marker into the list
             let listItem = document.createElement("li");
-            listItem.className = "p-2 border-b";
+            listItem.className = "p-2 border-b cursor-pointer hover:bg-gray-200";
+            listItem.dataset.lat = markerData.latitude;
+            listItem.dataset.lng = markerData.longitude;
 
             listItem.innerHTML = `<strong>${markerData.title}</strong>: ${markerData.description}`;
             markerList.appendChild(listItem);
+
+             // Move the map when clicked
+             listItem.addEventListener("click", function () {
+                map.setView([this.dataset.lat, this.dataset.lng], 14);
+                marker.openPopup();
+            });
         });
     })
     .catch(error => {
@@ -184,5 +192,54 @@ function deleteMarker(id) {
         }).catch(error => {
             alert('Error deleting marker.');
             console.log(error);
+        });
+}
+
+/***
+ * SEARCH
+ */
+// Handles the click from search location
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("searchLocationBtn").addEventListener("click", searchLocation);
+});
+
+// Search location function
+function searchLocation() {
+    let searchQuery = document.getElementById('searchBox').value;
+    if (!searchQuery) {
+        alert('Please enter a location name.');
+        return;
+    }
+
+    // Use OpenStreetMap Nominatim API to get location coordinates
+    let apiUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery)}`;
+
+    axios.get(apiUrl)
+        .then(response => {
+            if (response.data.length === 0) {
+                alert('Location not found.');
+                return;
+            }
+
+            let location = response.data[0]; // Take the first result
+            let lat = location.lat;
+            let lon = location.lon;
+
+            // Move the map to the searched location
+            map.setView([lat, lon], 13);
+
+            // Remove existing marker if any
+            if (selectedMarker) {
+                map.removeLayer(selectedMarker);
+            }
+
+            // Add a new marker at the searched location
+            selectedMarker = L.marker([lat, lon]).addTo(map)
+                .bindPopup(`<b>${location.display_name}</b>`)
+                .openPopup();
+        })
+        .catch(error => {
+            console.error('Error searching location:', error);
+            alert('Error searching location.');
         });
 }
