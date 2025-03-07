@@ -13,8 +13,8 @@
                 </div>
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     <select id="mapSwitcher" class="p-2 border rounded-md">
-                        <option value="osm">OpenStreetMap</option>
-                        <option value="google">Google Maps</option>
+                        <option value="open_street_map">OpenStreetMap</option>
+                        <option value="google_maps">Google Maps</option>
                     </select>
                     <button class="bg-blue-500 text-white px-4 py-2 rounded" onclick="saveMarker()">Save Marker</button>
                     <div id="map" style="height: 500px;"></div>

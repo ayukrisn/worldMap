@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\MapPreference;
 
 class MapPreferenceController extends Controller
 {
@@ -32,10 +34,16 @@ class MapPreferenceController extends Controller
 
     /**
      * Display the specified resource.
+     * Show the user's current map preference
      */
-    public function show(string $id)
+    public function show()
     {
-        //
+        $user = Auth::user();
+        $preference = MapPreference::where('user_id', $user->id)->first();
+
+        return response()->json([
+            'map_type' => $preference ? $preference->map_type : 'open_street_map'
+        ]);
     }
 
     /**
@@ -49,9 +57,20 @@ class MapPreferenceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request)
     {
-        //
+        $request->validate([
+            'map_type' => 'required|string|in:google_maps,open_street_map,mapbox'
+        ]);
+
+        $user = Auth::user();
+
+        MapPreference::updateOrCreate(
+            ['user_id' => $user->id],
+            ['map_type' => $request->map_type]
+        );
+
+        return response()->json(['message' => 'Map preference updated successfully']);
     }
 
     /**

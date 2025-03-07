@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MapPreferenceController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\MarkerController;
 use Illuminate\Support\Facades\Route;
@@ -23,6 +24,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/markers', [MarkerController::class, 'store'])->name('markers.store');
     Route::put('/markers/{marker}', [MarkerController::class, 'update'])->name('markers.update');
     Route::delete('/markers/{marker}', [MarkerController::class, 'destroy'])->name('markers.destroy');
+
+    //Map preference
+    Route::get('/map-preferences', [MapPreferenceController::class, 'show'])->name('map-preferences.show');
+    Route::post('/map-preferences', [MapPreferenceController::class, 'update'])->name('map-preferences.update');
 });
 
 require __DIR__.'/auth.php';

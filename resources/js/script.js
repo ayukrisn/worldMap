@@ -1,33 +1,66 @@
-alert("JS is called!")
+console.log("JS is called!")
 
 // Define the map, markers, and selectedMarker
 let map = L.map('map').setView([0, 0], 2); // Default map view
 let markers = [];
 let selectedMarker = null;
 
- // Define tile layers
- var layers = {
-     "osm": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-         attribution: '&copy; OpenStreetMap contributors'
-     }),
-     "google": L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
-         subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-         attribution: '&copy; Google'
-     })
- };
 
- // Add default layer
- layers["osm"].addTo(map);
+/***
+ * LAYERS
+ */
+// Define tile layers
+let layers = {
+    "open_street_map": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }),
+    "google_maps": L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+        attribution: '&copy; Google'
+    })
+};
 
- // Handle map switcher
- document.getElementById('mapSwitcher').addEventListener('change', function(e) {
-     var selectedLayer = e.target.value;
-     map.eachLayer(function(layer) {
-         map.removeLayer(layer);
-     });
-     layers[selectedLayer].addTo(map);
- });
+// Set the map preferences from the database
+document.addEventListener("DOMContentLoaded", function () {
+    axios.get('/map-preferences')
+        .then(response => {
+            // set the map according to the response
+            let mapType = response.data.map_type || 'open_street_map';
+            layers[mapType].addTo(map);
+            console.log("Axios for getting map preference is called!")
 
+            // set the switch according to the response
+            let mapSwitcher = document.getElementById("mapSwitcher");
+            if (mapSwitcher) {
+                mapSwitcher.value = mapType;
+            }
+        })
+        .catch(error => {
+            console.error("Error fetching map preference:", error);
+        });
+})
+
+// Save user's map preference
+function saveMapPreference(mapType) {
+    console.log(mapType)
+    axios.post('/map-preferences', { map_type: mapType }, { headers: { 'Content-Type': 'application/json' }, },)
+        .then(response => {
+            console.log(response.data.message);
+        })
+        .catch(error => {
+            console.error('Error saving map preference:', error);
+        });
+}
+
+// Handle map switcher and save the choice to database
+document.getElementById('mapSwitcher').addEventListener('change', function (e) {
+    let selectedLayer = e.target.value;
+    map.eachLayer(function (layer) {
+        map.removeLayer(layer);
+    });
+    saveMapPreference(selectedLayer);
+    layers[selectedLayer].addTo(map);
+});
 
 // Fetch and display existing markers
 function loadMarkers() {
@@ -47,7 +80,7 @@ loadMarkers();
 
 // Add marker on click
 map.on('click', function (e) {
-    alert("Map is clicked!")
+    console.log("Map is clicked!")
     if (selectedMarker) {
         map.removeLayer(selectedMarker);
     }

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('map_preferences', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('map_type'); // google_maps, open_street_map, etc.
+            $table->string('map_type')->default('open_street_map');
             $table->timestamps();
         });
     }
