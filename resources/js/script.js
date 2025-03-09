@@ -96,11 +96,25 @@ if (mapContainer) {
 
                 // put each marker into the list
                 let listItem = document.createElement("li");
-                listItem.className = "p-2 border-b cursor-pointer hover:bg-gray-200";
+                // listItem.className = "p-2 border-b cursor-pointer hover:bg-gray-200";
                 listItem.dataset.lat = markerData.latitude;
                 listItem.dataset.lng = markerData.longitude;
 
-                listItem.innerHTML = `<strong>${markerData.title}</strong>: ${markerData.description}`;
+                // listItem.innerHTML = `<strong>${markerData.title}</strong> <br> ${markerData.description}`;
+                listItem.innerHTML = `
+                    <div class="collapse collapse-arrow p-2 border-b cursor-pointer hover:bg-gray-200"> 
+                        <div class="collapse-title text-lg font-bold">
+                             ${markerData.title}
+                        </div>
+                        <div class="collapse-content">
+                            <p>${markerData.description}</p>
+                            <p class=" text-xs opacity-50"><strong>Latitude:</strong> ${markerData.latitude}</p>
+                            <p class=" text-xs opacity-50"><strong>Longitude:</strong> ${markerData.longitude}</p>
+                        </div>
+                    </div>
+                `;
+
+
                 markerList.appendChild(listItem);
 
                 // Move the map when clicked
