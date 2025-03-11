@@ -5,7 +5,7 @@
         </h2>
     </x-slot> --}}
     <div id="map" class="absolute w-full h-full z-0"></div>
-    <div id="map-menu" class="absolute top-0 left-0 w-full py-4 z-10">
+    <div id="map-menu" class="absolute bottom-0 left-0 w-full py-4 z-10">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">

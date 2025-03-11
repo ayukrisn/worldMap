@@ -8,14 +8,10 @@ if (mapContainer) {
     // Define the map, markers, and selectedMarker
     let map = L.map('map', {
         center: [51.505, -0.09],
-        zoomControl: false
+        zoomControl: true
     }).setView([-4.45, 54], 3);
     let markers = [];
     let selectedMarker = null;
-
-    L.control.zoom({
-        position: 'bottomright'
-    }).addTo(map);
 
     /***
      * LAYERS
@@ -287,6 +283,54 @@ if (mapContainer) {
                 alert('Error searching location.');
             });
     }
+
+    /***
+     * LEAFLET DRAW
+     */
+    let drawnItems = new L.FeatureGroup();
+    map.addLayer(drawnItems);
+
+    // Add Leaflet Draw controls
+    let drawControl = new L.Control.Draw({
+        edit: {
+            featureGroup: drawnItems,
+        },
+        draw: {
+            polygon: true,
+            polyline: true,
+            rectangle: true,
+            circle: true,
+        },
+    });
+
+    map.addControl(drawControl);
+
+    // Handle when users finish drawing
+    map.on('draw:created', function (event) {
+        let layer = event.layer;
+        drawnItems.addLayer(layer);
+
+        // Get GeoJSON data
+        let geojson = layer.toGeoJSON();
+        console.log("Drawn Shape:", geojson);
+
+        // Send it to Laravel backend (optional)
+        // saveShapeToBackend(geojson);
+    });
+
+    // Function to send drawn shapes to Laravel
+    // function saveShapeToBackend(geojson) {
+    //     fetch('/save-drawn-shape', {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+    //         },
+    //         body: JSON.stringify({ geojson: geojson })
+    //     }).then(response => response.json())
+    //         .then(data => console.log("Saved:", data))
+    //         .catch(error => console.error("Error:", error));
+    // }
 
 }
 
