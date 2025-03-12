@@ -138,7 +138,7 @@ if (mapContainer) {
         }
         let lat = e.latlng.lat;
         let lng = e.latlng.lng;
-        let displayName = e.display_name ? e.display_name : e.address?.country || "Unknown Location";
+        let displayName = "Location clicked at:";
 
         console.log(e);
 
